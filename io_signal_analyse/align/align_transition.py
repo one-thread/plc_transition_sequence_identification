@@ -145,13 +145,7 @@ if __name__ == '__main__':
 
     alignments = logs_alignments.apply(my_event_log,ana_event_log)
     print(alignments)
-    align = alignments[0].get("alignment")
-    concurrent = 0
-    for i in align:
-        if i[0] == ">>" or i[1] == ">>":
-            concurrent += 1
     print(f"平均拟合度：{alignments[0].get('fitness')}")
-    print(f"修正的操作{concurrent},总操作{len(align)}，拟合：{1-concurrent/len(align)}")
 
 
 
