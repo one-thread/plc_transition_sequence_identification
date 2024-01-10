@@ -111,6 +111,8 @@ class fireFunction:
                 # 从当前信号开始向前寻找
                 j = index
                 print("修正过程中没有发现公共触发函数，向前寻找最近的某个输出的触发函数")
+                # 用于标记哪些输出事件已经找到了最近的触发函数
+                hasfound = []
                 while j > 0:
                     j -= 1
                     temp = signal[j]
@@ -125,13 +127,13 @@ class fireFunction:
                         input_str = ' '.join(map(str, input_part))
                         input_val = [x for x in input_str.split(' ') if x != '']
                         # 遍历每一个匹配的输出信号，获取到其对应的输入信号列表，和当前的输入信号进行比较
-                        hasfound = []
-                        for out in all_output:
+                        all_out = set(all_output.copy()) - set(hasfound)
+                        for out in all_out:
                             fire = fire_function.get(out)
                             input_found, input_key = self.find_match(input_val, fire)
                             # 如果找到匹配，则创建字母标记，并添加到变迁中
                             if input_found:
-                                hasfound.append(True)
+                                hasfound.append(out)
                                 key = ' '.join(input_key)
                                 if key not in self.letter_mapping:
                                     self.letter_counter += 1
@@ -149,7 +151,7 @@ class fireFunction:
                             else:
                                 pass
                         # 如果均找到了最近的一个触发，则跳出while循环
-                        if all(hasfound):
+                        if len(hasfound) == len(all_output):
                             break
 
         # 如果是单输出信号
